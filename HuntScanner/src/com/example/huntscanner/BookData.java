@@ -49,25 +49,26 @@ public class BookData {
 	
 	/**
 	 * Converts a JSON string into a BookData object, or returns null if error.
-	 * @param json
-	 * @return
+	 * @param json JSON string to parse
+	 * @param encapsulatedInArray True if the data is inside a JSON array, which is inside a JSON
+	 * 							  object with the key "1". (This simplifies the server side code a bit.)
 	 */
 	public static BookData fromJSON(String json, boolean encapsulatedInArray) {
 		BookData bd = null;
 		
 		try {
-			JSONObject jobject = null;
+			JSONObject jobject;
 			if(encapsulatedInArray) {
-				JSONObject jobject = new JSONObject(json).getJSONArray("1").getJSONObject(0);
+				jobject = new JSONObject(json).getJSONArray("1").getJSONObject(0);
 			}
 			else {
-				JSONObject
+				jobject = new JSONObject(json);
 			}
 			
 			long id = jobject.getLong("bid");
 			String title = jobject.getString("tit");
 			String author = jobject.getString("auth");
-			int bookshelf = jobject.getInt("bid");
+			int bookshelf = jobject.getInt("sid");
 			
 			bd = new BookData(id, title, author, bookshelf);
 		} catch(Exception e) {
@@ -77,7 +78,10 @@ public class BookData {
 		
 		return bd;
 	}
-	
+
+	public static BookData fromJSON(String json) {
+		return fromJSON(json, true);
+	}
 	
 	public static BookData[] fromJSONArray(String json) {
 		List<BookData> bookDataList = new LinkedList<BookData>();
@@ -86,13 +90,13 @@ public class BookData {
 			JSONArray jarray = new JSONObject(json).getJSONArray("1");
 			
 			for(int i=0; i<jarray.length(); i++) {
-				bookDataList.add(BookData.fromJSON(jarray.getJSONObject(i).toString()));
+				bookDataList.add(BookData.fromJSON(jarray.getJSONObject(i).toString(), false));
 			}
 		} catch(Exception e) {
 			return null;
 		}
 		
-		return (BookData[]) bookDataList.toArray();
+		return (BookData[]) bookDataList.toArray(new BookData[bookDataList.size()]);
 	}
 	
 	@Override

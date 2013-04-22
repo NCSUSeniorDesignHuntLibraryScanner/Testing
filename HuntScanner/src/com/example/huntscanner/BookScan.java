@@ -22,16 +22,8 @@ public class BookScan extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		System.out.println("BookScan onResume");
 		NfcActivity.setScanMode(ScanMode.SINGLE);
 	}
-	
-//	@Override
-//	public void onPause(){
-//		super.onPause();
-//		System.out.println("BookScan onPause");
-//		NfcActivity.setScanMode(ScanMode.DISABLED);
-//	}
 	
 	@Override
 	public void onStop()  {

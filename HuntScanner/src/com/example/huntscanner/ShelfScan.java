@@ -20,7 +20,6 @@ public class ShelfScan extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		System.out.println("ShelfScan onResume");
 		NfcActivity.setScanMode(ScanMode.SHELF);
 	}
 	

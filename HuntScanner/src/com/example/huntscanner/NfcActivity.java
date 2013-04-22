@@ -20,7 +20,7 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 		DISABLED
 	}
 	
-	private static final String serverUriString = "http://10.139.65.61:3000/query";
+	private static final String serverUriString = "http://192.168.1.146:3000/query";
 	private static ScanMode scanMode = ScanMode.DISABLED;
 	
 	public static void setScanMode(ScanMode sm) {
@@ -42,18 +42,16 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 		if(td != null) {
 			System.out.println("Got TagData object: id=" + td.id + ", type=" + td.type);
 			
-			switch(scanMode) {
-			case SINGLE:
+			if(scanMode == ScanMode.SINGLE && td.type == TagData.BOOK) {
 				System.out.println("calling singleModeTagHandler()");
 				singleModeTagHandler(td);
-				break;
-			case SHELF:
+			}
+			else if(scanMode == ScanMode.SHELF) {
 				System.out.println("calling shelfModeTagHandler()");
 				shelfModeTagHandler(td);
-				break;
-			default:
+			}
+			else {
 				System.out.println("scanMode is invalid, ignoring");
-				break;
 			}
 		}
 		
@@ -87,7 +85,7 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 			URI uri = new URI(serverUriString);
 			GetDataTask gdt = new GetDataTask(this, uri, td.id, GetDataTask.RequestType.BOOK);
 			new Thread(gdt).start();
-		} catch (URISyntaxException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -97,14 +95,14 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 			URI uri = new URI(serverUriString);
 			GetDataTask gdt = new GetDataTask(this, uri, td.id, GetDataTask.RequestType.SHELF);
 			new Thread(gdt).start();
-		} catch (URISyntaxException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void bookDataReceived(BookData bd, boolean error) {
-		if(scanMode == ScanMode.SINGLE && !error) {
+		if(scanMode == ScanMode.SINGLE && !error && bd != null) {
 			System.out.println("Received BookData: " + bd.toString());
 		}
 		else {
@@ -114,7 +112,7 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 
 	@Override
 	public void shelfDataReceived(BookData[] shelf, boolean error) {
-		if(scanMode == ScanMode.SHELF && !error) {
+		if(scanMode == ScanMode.SHELF && !error && shelf != null) {
 			System.out.println("Received BookData array: ");
 			
 			for(BookData bd : shelf) {
