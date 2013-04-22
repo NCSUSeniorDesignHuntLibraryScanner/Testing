@@ -12,8 +12,16 @@ public class Scanner extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
+        
+        Intent intent = getIntent();
     }
-
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	
+    	NfcActivity.setScanMode(NfcActivity.ScanMode.DISABLED);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -22,24 +30,15 @@ public class Scanner extends Activity {
         return true;
     }
     
-    
-    
-    
-    
-      
-    
     public void shelfScan(View button2){
     	Intent shelf = new Intent(this, ShelfScan.class);
     	startActivity(shelf);
     	
     }
     
-    
     public void bookScan(View button1){
     	Intent book = new Intent(this, BookScan.class);
     	startActivity(book);
-    	
-
     }
  
 }

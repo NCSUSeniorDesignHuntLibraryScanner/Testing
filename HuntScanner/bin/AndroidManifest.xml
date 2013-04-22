@@ -5,8 +5,12 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="16"
         android:targetSdkVersion="17" />
+    
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.INTERNET" />
+	<uses-feature android:name="android.hardware.nfc" android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -15,20 +19,38 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.example.huntscanner.Scanner"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
    		
         <activity
-            android:name="BookScan">
+            android:name=".BookScan">
         </activity>
         
         <activity
-            android:name="ShelfScan">
+            android:name=".ShelfScan">
+        </activity>
+        
+<!--         <receiver android:name=".NfcReceiver">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <data android:mimeType="application/com.example.huntscanner"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver> -->
+        
+        <activity
+            android:name=".NfcActivity"
+            android:theme="@android:style/Theme.NoDisplay">
+			<intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <data android:mimeType="application/com.example.huntscanner"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
     </application>
 
