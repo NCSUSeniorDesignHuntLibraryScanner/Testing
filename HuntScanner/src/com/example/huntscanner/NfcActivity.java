@@ -26,6 +26,7 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 	
 	private static ScanMode scanMode = ScanMode.DISABLED;
 	private static OrderChecker orderChecker = null;
+	private static TagData lastTag = null;
 	
 	public static void setScanMode(ScanMode sm) {
 		scanMode = sm;
@@ -45,6 +46,8 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 		TagData td = getTagData(intent);
 		if(td != null) {
 			System.out.println("Got TagData object: id=" + td.id + ", type=" + td.type);
+			
+			lastTag = td;
 			
 			if(scanMode == ScanMode.SINGLE && td.type == TagData.BOOK) {
 				System.out.println("calling singleModeTagHandler()");
@@ -117,6 +120,14 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 					break;
 				case OUT_OF_ORDER:
 					System.out.println("Out of order book scanned");
+					
+					try {
+						URI uri = new URI(serverUriString);
+						GetDataTask gdt = new GetDataTask(this, uri, td.id, GetDataTask.RequestType.BOOK, HANDLE_MISPLACED_BOOK);
+						new Thread(gdt).start();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					break;
 				case SAME_BOOK:
 					System.out.println("Duplicate scan, ignoring");
@@ -137,8 +148,15 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 			if(scanMode == ScanMode.SINGLE) {
 				System.out.println("Updating BookScan activity");
 			}
-			else if(scanMode == ScanMode.SHELF) {
-				// TODO
+			else if(scanMode == ScanMode.SHELF && handle == HANDLE_MISPLACED_BOOK) {
+				try {
+					URI uri = new URI(serverUriString);	
+					GetDataTask gdt = new GetDataTask(this, uri, bd.bookshelf, GetDataTask.RequestType.SHELF, HANDLE_MISPLACED_BOOK);
+					
+					new Thread(gdt).start();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		else {
@@ -159,7 +177,14 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 			}
 			else if(scanMode == ScanMode.SHELF) {
 				if(handle == HANDLE_MISPLACED_BOOK) {
-					
+					// Get left and right books
+					for(int i=0; i<shelf.length; i++) {
+						if(lastTag.id == shelf[i].id) {
+							BookData leftBook = (i > 0) ? shelf[i-1] : null;
+							BookData rightBook = (i < shelf.length-1) ? shelf[i+1] : null;
+							System.out.println("leftBook=" + leftBook + " rightBook=" + rightBook);
+						}
+					}
 				}
 				else {
 					System.out.println("Creating new OrderChecker");
