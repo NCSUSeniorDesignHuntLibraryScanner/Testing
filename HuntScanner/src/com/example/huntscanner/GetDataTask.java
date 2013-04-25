@@ -34,12 +34,18 @@ public class GetDataTask implements Runnable {
 	private final URI uri;
 	private final long id;
 	private final RequestType requestType;
+	private final int handle;
 	
-	public GetDataTask(GetDataTaskCallback cb, URI uri, long id, RequestType requestType) {
+	public GetDataTask(GetDataTaskCallback cb, URI uri, long id, RequestType requestType, int handle) {
 		this.callback = cb;
 		this.uri = uri;
 		this.id = id;
 		this.requestType = requestType;
+		this.handle = handle;
+	}
+	
+	public GetDataTask(GetDataTaskCallback cb, URI uri, long id, RequestType requestType) {
+		this(cb, uri, id, requestType, -1);
 	}
 	
 	@Override
@@ -84,21 +90,21 @@ public class GetDataTask implements Runnable {
 			while((line = br.readLine()) != null) {
 				sb.append(line + "\n");
 			}
+			
+			json = sb.toString();
+			System.out.println("Received json from server: " + json);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			error = true;
 		}
 		
-		json = sb.toString();
-		System.out.println("Received json from server: " + json);
-		
 		switch(requestType) {
 		case SHELF:
-			callback.shelfDataReceived(BookData.fromJSONArray(json), error);
+			callback.shelfDataReceived(BookData.fromJSONArray(json), error, handle);
 			break;
 		case BOOK:
-			callback.bookDataReceived(BookData.fromJSON(json), error);
+			callback.bookDataReceived(BookData.fromJSON(json), error, handle);
 			break;
 		}
 	}

@@ -20,8 +20,12 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 		DISABLED
 	}
 	
-	private static final String serverUriString = "http://192.168.1.146:3000/query";
+	private static final String serverUriString = "http://192.168.43.236:3000/query";
+	private static final int HANDLE_SHELF_TAG = 0;
+	private static final int HANDLE_MISPLACED_BOOK = 1;
+	
 	private static ScanMode scanMode = ScanMode.DISABLED;
+	private static OrderChecker orderChecker = null;
 	
 	public static void setScanMode(ScanMode sm) {
 		scanMode = sm;
@@ -91,19 +95,51 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 	}
 	
 	private void shelfModeTagHandler(TagData td) {
-		try {
-			URI uri = new URI(serverUriString);
-			GetDataTask gdt = new GetDataTask(this, uri, td.id, GetDataTask.RequestType.SHELF);
-			new Thread(gdt).start();
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(td.type == TagData.SHELF) {
+			try {
+				orderChecker = null;
+				URI uri = new URI(serverUriString);	
+				GetDataTask gdt = new GetDataTask(this, uri, td.id, GetDataTask.RequestType.SHELF, HANDLE_SHELF_TAG);
+				
+				new Thread(gdt).start();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		else if(td.type == TagData.BOOK) { 
+			if(orderChecker != null) {
+				switch(orderChecker.nextTag(td)) {
+				case CORRECT:
+					System.out.println("Correct book scanned");
+					break;
+				case END_OF_SHELF:
+					System.out.println("End of shelf has been reached");
+					break;
+				case OUT_OF_ORDER:
+					System.out.println("Out of order book scanned");
+					break;
+				case SAME_BOOK:
+					System.out.println("Duplicate scan, ignoring");
+					break;
+				}
+			}
+			else {
+				System.out.println("Need shelf tag first");
+			}
 		}
 	}
 
 	@Override
-	public void bookDataReceived(BookData bd, boolean error) {
-		if(scanMode == ScanMode.SINGLE && !error && bd != null) {
+	public void bookDataReceived(BookData bd, boolean error, int handle) {
+		if(!error && bd != null) {
 			System.out.println("Received BookData: " + bd.toString());
+			
+			if(scanMode == ScanMode.SINGLE) {
+				System.out.println("Updating BookScan activity");
+			}
+			else if(scanMode == ScanMode.SHELF) {
+				// TODO
+			}
 		}
 		else {
 			System.out.println("Something went wront in NfcActivity.bookDataReceived()");
@@ -111,16 +147,28 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 	}
 
 	@Override
-	public void shelfDataReceived(BookData[] shelf, boolean error) {
-		if(scanMode == ScanMode.SHELF && !error && shelf != null) {
+	public void shelfDataReceived(BookData[] shelf, boolean error, int handle) {
+		if(!error && shelf != null) {
 			System.out.println("Received BookData array: ");
-			
 			for(BookData bd : shelf) {
 				System.out.println(bd.toString());
 			}
+			
+			if(scanMode == ScanMode.SINGLE) {
+				System.out.println("Received shelf data in single book mode - ignoring");
+			}
+			else if(scanMode == ScanMode.SHELF) {
+				if(handle == HANDLE_MISPLACED_BOOK) {
+					
+				}
+				else {
+					System.out.println("Creating new OrderChecker");
+					orderChecker = new OrderChecker(shelf);
+				}
+			}
 		}
 		else {
-			System.out.println("Something went wrong in NfcActivity.shelfDataReceived()");
+			System.out.println("Something went wront in NfcActivity.shelfDataReceived()");
 		}
 	}
 }

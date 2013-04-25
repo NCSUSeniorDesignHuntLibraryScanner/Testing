@@ -17,12 +17,14 @@ public class BookData {
 	public final String title;
 	public final String author;
 	public final int bookshelf;
+	public final long isbn;
 	
-	public BookData(long id, String title, String author, int bookshelf) {
+	public BookData(long id, String title, String author, int bookshelf, long isbn) {
 		this.id = id;
 		this.title = title;
 		this.author = author;
 		this.bookshelf = bookshelf;
+		this.isbn = isbn;
 	}
 	
 	
@@ -69,8 +71,9 @@ public class BookData {
 			String title = jobject.getString("tit");
 			String author = jobject.getString("auth");
 			int bookshelf = jobject.getInt("sid");
+			long isbn = jobject.getLong("isbn");
 			
-			bd = new BookData(id, title, author, bookshelf);
+			bd = new BookData(id, title, author, bookshelf, isbn);
 		} catch(Exception e) {
 			e.printStackTrace();
 			bd = null;
@@ -87,7 +90,10 @@ public class BookData {
 		List<BookData> bookDataList = new LinkedList<BookData>();
 		
 		try {
-			JSONArray jarray = new JSONObject(json).getJSONArray("1");
+//			JSONArray jarray = new JSONObject(json).getJSONArray("1");
+			JSONObject jOuterObject = new JSONObject(json);
+			String key = (String) jOuterObject.keys().next();
+			JSONArray jarray = jOuterObject.getJSONArray(key);
 			
 			for(int i=0; i<jarray.length(); i++) {
 				bookDataList.add(BookData.fromJSON(jarray.getJSONObject(i).toString(), false));
