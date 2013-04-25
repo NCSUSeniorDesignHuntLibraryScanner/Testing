@@ -45,17 +45,4 @@
         android:onClick="bookScan"
         android:text="@string/book_mode" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="34dp"
-        android:layout_marginLeft="21dp"
-        android:background="@null"
-        android:drawableLeft="@drawable/settings"
-        android:textColor="#FFFFFF"
-        android:text="@string/settings" />
-
 </RelativeLayout>
