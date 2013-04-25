@@ -94,8 +94,8 @@
         android:id="@+id/bookshelf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView4"
-        android:layout_toLeftOf="@+id/textView4"
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_toRightOf="@+id/textView4"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFF" />
 
@@ -112,8 +112,8 @@
         android:id="@+id/author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView3"
-        android:layout_toLeftOf="@+id/textView3"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_toRightOf="@+id/textView3"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFF" />
 
