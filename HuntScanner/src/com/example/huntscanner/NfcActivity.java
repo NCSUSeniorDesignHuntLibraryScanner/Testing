@@ -147,6 +147,13 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 			
 			if(scanMode == ScanMode.SINGLE) {
 				System.out.println("Updating BookScan activity");
+				
+//				BookScan.activity.newBook(bd);
+				Intent intent = new Intent(this, BookScan.class);
+				intent.putExtra("EXTRA_TITLE", bd.title);
+				intent.putExtra("EXTRA_AUTHOR", bd.author);
+				intent.putExtra("EXTRA_BOOKSHELF", Integer.toString(bd.bookshelf));
+				startActivity(intent);
 			}
 			else if(scanMode == ScanMode.SHELF && handle == HANDLE_MISPLACED_BOOK) {
 				try {
