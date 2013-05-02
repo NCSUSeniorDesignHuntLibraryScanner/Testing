@@ -61,7 +61,10 @@ public class BookData {
 		try {
 			JSONObject jobject;
 			if(encapsulatedInArray) {
-				jobject = new JSONObject(json).getJSONArray("1").getJSONObject(0);
+//				jobject = new JSONObject(json).getJSONArray("1").getJSONObject(0);
+				JSONObject jOuterObject = new JSONObject(json);
+				String key = (String) jOuterObject.keys().next();
+				jobject = jOuterObject.getJSONArray(key).getJSONObject(0);
 			}
 			else {
 				jobject = new JSONObject(json);

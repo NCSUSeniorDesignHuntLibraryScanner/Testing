@@ -52,4 +52,11 @@ public class OrderChecker {
 		
 		return null;
 	}
+	
+	public BookData currentBook() {
+		if(index < shelf.length)
+			return shelf[index];
+		else
+			return shelf[shelf.length-1];
+	}
 }

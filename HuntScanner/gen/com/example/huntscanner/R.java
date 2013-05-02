@@ -32,21 +32,24 @@ public final class R {
         public static final int settings=0x7f020008;
     }
     public static final class id {
-        public static final int action_settings=0x7f08000e;
-        public static final int author=0x7f08000a;
-        public static final int bookshelf=0x7f080008;
-        public static final int button1=0x7f08000c;
-        public static final int button2=0x7f08000b;
-        public static final int editText2=0x7f08000d;
-        public static final int progressBar1=0x7f080001;
-        public static final int textView1=0x7f080000;
-        public static final int textView2=0x7f080002;
-        public static final int textView3=0x7f080003;
-        public static final int textView4=0x7f080004;
-        public static final int textView5=0x7f080006;
-        public static final int textView6=0x7f080005;
-        public static final int textView7=0x7f080007;
-        public static final int title=0x7f080009;
+        public static final int action_settings=0x7f080011;
+        public static final int author=0x7f080004;
+        public static final int author_fixed=0x7f080005;
+        public static final int author_shelf=0x7f08000f;
+        public static final int bookshelf=0x7f080000;
+        public static final int bookshelf_fixed=0x7f080001;
+        public static final int button1=0x7f08000d;
+        public static final int button2=0x7f08000c;
+        public static final int left_title=0x7f08000a;
+        public static final int neighbor_left=0x7f080008;
+        public static final int neighbor_right=0x7f080009;
+        public static final int neighbors_fixed=0x7f080007;
+        public static final int right_title=0x7f08000b;
+        public static final int status=0x7f080010;
+        public static final int textView1=0x7f080006;
+        public static final int title=0x7f080002;
+        public static final int title_fixed=0x7f080003;
+        public static final int title_shelf=0x7f08000e;
     }
     public static final class layout {
         public static final int book_page=0x7f030000;

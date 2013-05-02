@@ -11,9 +11,17 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="47dp"
-            android:text=""
+            android:text="@string/please_scan_shelf"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#FFFFFF" />
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dp" />
 
         <TextView
             android:id="@+id/title_fixed"
@@ -42,38 +50,38 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/author_fixed"
             android:layout_below="@+id/author_fixed"
-            android:layout_marginTop="14dp"
             android:text="@string/author"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#FFFFFF" />
 
-        <TextView
-            android:id="@+id/title_shelf"
+        <Button
+            android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/author_fixed"
-            android:layout_toRightOf="@+id/author_fixed"
-            android:textColor="#FFFF"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <TextView
-            android:id="@+id/author_shelf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/bookshelf_fixed"
-            android:layout_toRightOf="@+id/bookshelf_fixed"
-            android:textColor="#FFFF"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/title_fixed"
+            android:layout_below="@+id/bookshelf_fixed"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="58dp"
-            android:textSize= "50sp"
-            android:textColor= "#FFFF"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:layout_marginTop="48dp"
+            android:alpha="100"
+            android:text="@string/current_shelf"
+            android:textColor="#FFFFFF" />
+
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bookshelf_fixed"
+            android:layout_toRightOf="@+id/bookshelf_fixed"
+            android:ems="10" >
+
+            
+        </EditText>
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/author_fixed"
+            android:ems="10" />
 
 </RelativeLayout>

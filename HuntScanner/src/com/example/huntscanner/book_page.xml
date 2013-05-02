@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+<<<<<<< HEAD
     android:layout_height="match_parent"
+    android:background="@drawable/bookshelf_background"
+    android:paddingleft="16dp"
+    android:paddingright="16dp" >
+=======
+    android:layout_height="match_parent" 
     android:background="@drawable/bookshelf_background" >
+>>>>>>> parent of 46c2e23... xml 3
 
     <TextView
         android:id="@+id/bookshelf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/bookshelf_fixed"
-        android:layout_toRightOf="@+id/bookshelf_fixed"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_above="@+id/bookshelf_fixed"
+        android:layout_toLeftOf="@+id/bookshelf_fixed"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFF" />
 
     <TextView
@@ -19,16 +26,16 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/title_fixed"
         android:layout_toRightOf="@+id/title_fixed"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFF" />
 
     <TextView
         android:id="@+id/author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/author_fixed"
-        android:layout_toRightOf="@+id/author_fixed"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_above="@+id/author_fixed"
+        android:layout_toLeftOf="@+id/author_fixed"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFF" />
 
     <TextView
@@ -47,10 +54,10 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/author_fixed"
         android:layout_below="@+id/author_fixed"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="30dp"
         android:hint="@string/shelf"
         android:text="@string/shelf"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFF" />
 
     <TextView
@@ -59,9 +66,9 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/title_fixed"
         android:layout_below="@+id/title_fixed"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="30dp"
         android:text="@string/author"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFF" />
 
     <TextView
@@ -70,10 +77,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView1"
         android:layout_marginRight="18dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_toLeftOf="@+id/textView1"
         android:text="@string/title"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFF" />
 
     <TextView
@@ -82,19 +89,51 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/bookshelf_fixed"
         android:layout_below="@+id/bookshelf_fixed"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="30dp"
         android:text="@string/neighbors"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFF" />
 
     <TextView
         android:id="@+id/neighbor_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_toRightOf="@+id/textView4"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+=======
         android:layout_below="@+id/neighbors_fixed"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="18dp"
         android:layout_toLeftOf="@+id/title"
         android:text="@string/left"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+>>>>>>> changes
+        android:textColor="#FFFF" />
+
+    <TextView
+        android:id="@+id/left_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/neighbor_left"
+        android:layout_marginTop="31dp"
+        android:layout_toLeftOf="@+id/neighbor_left"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFF" />
+
+    <TextView
+        android:id="@+id/right_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+<<<<<<< HEAD
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_toRightOf="@+id/textView3"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+=======
+        android:layout_alignBaseline="@+id/left_title"
+        android:layout_alignBottom="@+id/left_title"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_marginRight="20dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#FFFF" />
 
@@ -102,32 +141,11 @@
         android:id="@+id/neighbor_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/neighbor_left"
-        android:layout_alignBottom="@+id/neighbor_left"
-        android:layout_toRightOf="@+id/textView1"
+        android:layout_above="@+id/left_title"
+        android:layout_alignLeft="@+id/right_title"
         android:text="@string/right"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#FFFF" />
-
-    <TextView
-        android:id="@+id/left_title"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/neighbor_left"
-        android:layout_marginTop="25dp"
-        android:singleLine="false"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#FFFF" />
-
-    <TextView
-        android:id="@+id/right_title"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
-        android:singleLine="false"
-        android:layout_marginTop="300dp"
-        android:layout_toRightOf="@+id/textView1"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+>>>>>>> changes
         android:textColor="#FFFF" />
 
 </RelativeLayout>

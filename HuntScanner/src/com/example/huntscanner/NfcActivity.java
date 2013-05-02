@@ -4,12 +4,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.Vibrator;
 import android.view.View;
 
 public class NfcActivity extends Activity implements GetDataTaskCallback {
@@ -27,6 +29,7 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 	private static ScanMode scanMode = ScanMode.DISABLED;
 	private static OrderChecker orderChecker = null;
 	private static TagData lastTag = null;
+	private Vibrator vibrator;
 	
 	public static void setScanMode(ScanMode sm) {
 		scanMode = sm;
@@ -36,6 +39,7 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
+		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	}
 	
 	@Override
@@ -111,12 +115,29 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 		}
 		else if(td.type == TagData.BOOK) { 
 			if(orderChecker != null) {
+				Intent intent = new Intent(this, ShelfScan.class);
+				BookData bd = orderChecker.currentBook();
+				
 				switch(orderChecker.nextTag(td)) {
 				case CORRECT:
 					System.out.println("Correct book scanned");
+					
+					intent.putExtra("PREV_TITLE", bd.title);
+					intent.putExtra("PREV_AUTHOR", bd.author);
+					intent.putExtra("SCAN_STATUS", "OK");
+					intent.putExtra("COLOR_RED", false);
+					startActivity(intent);
+					vibrator.vibrate(100);
 					break;
 				case END_OF_SHELF:
 					System.out.println("End of shelf has been reached");
+					
+					intent.putExtra("PREV_TITLE", "");
+					intent.putExtra("PREV_AUTHOR", "");
+					intent.putExtra("SCAN_STATUS", "DONE");
+					intent.putExtra("COLOR_RED", false);
+					startActivity(intent);
+					
 					break;
 				case OUT_OF_ORDER:
 					System.out.println("Out of order book scanned");
@@ -128,6 +149,13 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+					
+					intent.putExtra("PREV_TITLE", "");
+					intent.putExtra("PREV_AUTHOR", "");
+					intent.putExtra("SCAN_STATUS", "MISPLACED");
+					intent.putExtra("COLOR_RED", true);
+					startActivity(intent);
+					vibrator.vibrate(600);
 					break;
 				case SAME_BOOK:
 					System.out.println("Duplicate scan, ignoring");
@@ -136,6 +164,13 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 			}
 			else {
 				System.out.println("Need shelf tag first");
+				
+				Intent intent = new Intent(this, ShelfScan.class);
+				intent.putExtra("PREV_TITLE", "");
+				intent.putExtra("PREV_AUTHOR", "");
+				intent.putExtra("SCAN_STATUS", "SCAN A SHELF");
+				intent.putExtra("COLOR_RED", false);
+				startActivity(intent);
 			}
 		}
 	}
@@ -148,12 +183,21 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 			if(scanMode == ScanMode.SINGLE) {
 				System.out.println("Updating BookScan activity");
 				
-//				BookScan.activity.newBook(bd);
 				Intent intent = new Intent(this, BookScan.class);
 				intent.putExtra("EXTRA_TITLE", bd.title);
 				intent.putExtra("EXTRA_AUTHOR", bd.author);
 				intent.putExtra("EXTRA_BOOKSHELF", Integer.toString(bd.bookshelf));
 				startActivity(intent);
+				
+				// Load shelf to get left and right books
+				try {
+					URI uri = new URI(serverUriString);	
+					GetDataTask gdt = new GetDataTask(this, uri, bd.bookshelf, GetDataTask.RequestType.SHELF);
+					
+					new Thread(gdt).start();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			else if(scanMode == ScanMode.SHELF && handle == HANDLE_MISPLACED_BOOK) {
 				try {
@@ -179,24 +223,44 @@ public class NfcActivity extends Activity implements GetDataTaskCallback {
 				System.out.println(bd.toString());
 			}
 			
-			if(scanMode == ScanMode.SINGLE) {
-				System.out.println("Received shelf data in single book mode - ignoring");
-			}
-			else if(scanMode == ScanMode.SHELF) {
-				if(handle == HANDLE_MISPLACED_BOOK) {
-					// Get left and right books
-					for(int i=0; i<shelf.length; i++) {
-						if(lastTag.id == shelf[i].id) {
-							BookData leftBook = (i > 0) ? shelf[i-1] : null;
-							BookData rightBook = (i < shelf.length-1) ? shelf[i+1] : null;
-							System.out.println("leftBook=" + leftBook + " rightBook=" + rightBook);
+			if(scanMode == ScanMode.SINGLE || (scanMode == ScanMode.SHELF && handle == HANDLE_MISPLACED_BOOK)) {
+				// Get left and right books
+				for(int i=0; i<shelf.length; i++) {
+					if(lastTag.id == shelf[i].id) {
+						BookData leftBook = (i > 0) ? shelf[i-1] : null;
+						BookData rightBook = (i < shelf.length-1) ? shelf[i+1] : null;
+						System.out.println("leftBook=" + leftBook + " rightBook=" + rightBook);
+						
+						Intent intent = null;
+						if(scanMode == ScanMode.SINGLE) {
+							intent = new Intent(this, BookScan.class);			
 						}
+						else if(scanMode == ScanMode.SHELF) {
+							intent = new Intent(this, ShelfScan.class);
+						}
+						
+						if(intent != null) {
+							String leftTitle = (leftBook != null) ? leftBook.title : null;
+							String rightTitle = (rightBook != null) ? rightBook.title : null;
+							intent.putExtra("LEFT_TITLE", leftTitle);
+							intent.putExtra("RIGHT_TITLE", rightTitle);
+							startActivity(intent);
+						}
+						
+						break;
 					}
 				}
-				else {
-					System.out.println("Creating new OrderChecker");
-					orderChecker = new OrderChecker(shelf);
-				}
+			}
+			else if(scanMode == ScanMode.SHELF) {
+				System.out.println("Creating new OrderChecker");
+				orderChecker = new OrderChecker(shelf);
+				
+				Intent intent = new Intent(this, ShelfScan.class);
+				intent.putExtra("PREV_TITLE", "");
+				intent.putExtra("PREV_AUTHOR", "");
+				intent.putExtra("SCAN_STATUS", "SHELF");
+				intent.putExtra("COLOR_RED", false);
+				startActivity(intent);
 			}
 		}
 		else {
